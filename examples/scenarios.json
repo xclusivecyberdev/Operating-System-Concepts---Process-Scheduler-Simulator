@@ -1,0 +1,283 @@
+{
+  "scenarios": {
+    "default": {
+      "name": "Default Example",
+      "description": "A basic scenario with 4 processes to get started",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 5, "priority": 2 },
+        { "arrivalTime": 1, "burstTime": 3, "priority": 1 },
+        { "arrivalTime": 2, "burstTime": 8, "priority": 3 },
+        { "arrivalTime": 3, "burstTime": 6, "priority": 2 }
+      ],
+      "recommendedAlgorithms": ["fcfs", "sjf", "rr"]
+    },
+
+    "convoy": {
+      "name": "Convoy Effect Demonstration",
+      "description": "Shows the convoy effect where short processes wait for a long process in FCFS",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 24, "priority": 2 },
+        { "arrivalTime": 1, "burstTime": 3, "priority": 1 },
+        { "arrivalTime": 2, "burstTime": 3, "priority": 1 }
+      ],
+      "expectedBehavior": {
+        "fcfs": "Poor performance - short processes wait for long process",
+        "sjf": "Better - but P1 starts first and blocks others",
+        "srtf": "Best - preempts P1 for shorter processes",
+        "rr": "Fair - all processes get CPU time regularly"
+      },
+      "teachingPoints": [
+        "FCFS suffers from convoy effect",
+        "Average waiting time very high in FCFS",
+        "Preemptive algorithms handle this better"
+      ]
+    },
+
+    "starvation": {
+      "name": "Priority Starvation",
+      "description": "Demonstrates how low priority processes can starve in priority scheduling",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 4, "priority": 0 },
+        { "arrivalTime": 1, "burstTime": 2, "priority": 0 },
+        { "arrivalTime": 2, "burstTime": 8, "priority": 2 },
+        { "arrivalTime": 3, "burstTime": 1, "priority": 0 },
+        { "arrivalTime": 4, "burstTime": 3, "priority": 1 }
+      ],
+      "expectedBehavior": {
+        "priority": "P3 (priority 2) executes last, waits long time",
+        "fcfs": "Fair execution order",
+        "mlfq": "Aging prevents starvation of P3"
+      },
+      "teachingPoints": [
+        "Low priority processes can starve",
+        "Aging mechanism helps prevent starvation",
+        "MLFQ handles this better than simple priority"
+      ]
+    },
+
+    "mixed": {
+      "name": "Mixed Workload",
+      "description": "Mix of short, medium, and long processes with varying priorities",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 10, "priority": 2 },
+        { "arrivalTime": 1, "burstTime": 1, "priority": 0 },
+        { "arrivalTime": 2, "burstTime": 2, "priority": 1 },
+        { "arrivalTime": 3, "burstTime": 1, "priority": 0 },
+        { "arrivalTime": 4, "burstTime": 5, "priority": 2 }
+      ],
+      "teachingPoints": [
+        "Different algorithms optimize for different metrics",
+        "SJF minimizes average waiting time",
+        "Priority helps important processes",
+        "Round Robin provides fairness"
+      ]
+    },
+
+    "iobound": {
+      "name": "I/O Bound Processes",
+      "description": "Short CPU bursts simulating I/O bound processes",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 2, "priority": 1 },
+        { "arrivalTime": 1, "burstTime": 1, "priority": 0 },
+        { "arrivalTime": 2, "burstTime": 3, "priority": 1 },
+        { "arrivalTime": 3, "burstTime": 1, "priority": 0 },
+        { "arrivalTime": 4, "burstTime": 2, "priority": 1 },
+        { "arrivalTime": 5, "burstTime": 1, "priority": 0 }
+      ],
+      "expectedBehavior": {
+        "rr": "Good response time, fair sharing",
+        "priority": "High priority (0) processes get quick response",
+        "mlfq": "Processes stay in high priority queues"
+      },
+      "teachingPoints": [
+        "I/O bound processes have short CPU bursts",
+        "Good response time is critical",
+        "Round Robin works well for interactive processes",
+        "MLFQ naturally prioritizes I/O bound processes"
+      ]
+    },
+
+    "cpubound": {
+      "name": "CPU Bound Processes",
+      "description": "Long CPU bursts simulating CPU intensive processes",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 20, "priority": 2 },
+        { "arrivalTime": 2, "burstTime": 15, "priority": 2 },
+        { "arrivalTime": 4, "burstTime": 18, "priority": 2 }
+      ],
+      "expectedBehavior": {
+        "fcfs": "Simple, low overhead",
+        "sjf": "Slightly better average time",
+        "rr": "High context switching overhead for little benefit",
+        "mlfq": "Processes migrate to lower queues"
+      },
+      "teachingPoints": [
+        "CPU bound processes have long bursts",
+        "Context switching overhead matters",
+        "FCFS acceptable for batch processing",
+        "Large quantum or non-preemptive better here"
+      ]
+    },
+
+    "realtime": {
+      "name": "Real-Time Scenario",
+      "description": "Processes with strict priority requirements (simulating real-time deadlines)",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 3, "priority": 0 },
+        { "arrivalTime": 1, "burstTime": 5, "priority": 2 },
+        { "arrivalTime": 2, "burstTime": 2, "priority": 0 },
+        { "arrivalTime": 3, "burstTime": 4, "priority": 1 },
+        { "arrivalTime": 4, "burstTime": 1, "priority": 0 }
+      ],
+      "expectedBehavior": {
+        "priority-preemptive": "Best - ensures high priority processes execute ASAP",
+        "priority": "Good - respects priorities",
+        "fcfs": "Poor - ignores priorities",
+        "rr": "Poor - delays high priority processes"
+      },
+      "teachingPoints": [
+        "Real-time systems need deterministic scheduling",
+        "Preemptive priority scheduling essential",
+        "Lower priority tasks may miss deadlines",
+        "Fair scheduling not appropriate for real-time"
+      ]
+    },
+
+    "balanced": {
+      "name": "Balanced Workload",
+      "description": "Well-balanced mix suitable for general-purpose scheduling comparison",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 5, "priority": 1 },
+        { "arrivalTime": 1, "burstTime": 3, "priority": 2 },
+        { "arrivalTime": 2, "burstTime": 8, "priority": 0 },
+        { "arrivalTime": 3, "burstTime": 6, "priority": 1 },
+        { "arrivalTime": 4, "burstTime": 4, "priority": 2 },
+        { "arrivalTime": 5, "burstTime": 2, "priority": 0 }
+      ],
+      "teachingPoints": [
+        "Good scenario for algorithm comparison",
+        "Shows trade-offs between different approaches",
+        "No single algorithm dominates all metrics"
+      ]
+    },
+
+    "stress": {
+      "name": "Stress Test",
+      "description": "Many processes to test algorithm performance",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 8, "priority": 2 },
+        { "arrivalTime": 1, "burstTime": 4, "priority": 1 },
+        { "arrivalTime": 2, "burstTime": 9, "priority": 3 },
+        { "arrivalTime": 3, "burstTime": 5, "priority": 0 },
+        { "arrivalTime": 4, "burstTime": 3, "priority": 1 },
+        { "arrivalTime": 5, "burstTime": 7, "priority": 2 },
+        { "arrivalTime": 6, "burstTime": 2, "priority": 0 },
+        { "arrivalTime": 7, "burstTime": 6, "priority": 1 },
+        { "arrivalTime": 8, "burstTime": 4, "priority": 2 },
+        { "arrivalTime": 9, "burstTime": 5, "priority": 1 }
+      ],
+      "teachingPoints": [
+        "Tests scalability of algorithms",
+        "Context switching becomes more significant",
+        "Overhead of complex algorithms more visible"
+      ]
+    },
+
+    "worstcase_fcfs": {
+      "name": "FCFS Worst Case",
+      "description": "Longest jobs arrive first - worst case for FCFS",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 20, "priority": 1 },
+        { "arrivalTime": 1, "burstTime": 15, "priority": 1 },
+        { "arrivalTime": 2, "burstTime": 10, "priority": 1 },
+        { "arrivalTime": 3, "burstTime": 5, "priority": 1 },
+        { "arrivalTime": 4, "burstTime": 1, "priority": 1 }
+      ],
+      "expectedBehavior": {
+        "fcfs": "Very poor average waiting time",
+        "sjf": "Much better - reverses execution order after P1",
+        "srtf": "Best - quickly preempts for shorter jobs"
+      }
+    },
+
+    "bestcase_fcfs": {
+      "name": "FCFS Best Case",
+      "description": "Shortest jobs arrive first - best case for FCFS",
+      "processes": [
+        { "arrivalTime": 0, "burstTime": 1, "priority": 1 },
+        { "arrivalTime": 1, "burstTime": 5, "priority": 1 },
+        { "arrivalTime": 2, "burstTime": 10, "priority": 1 },
+        { "arrivalTime": 3, "burstTime": 15, "priority": 1 },
+        { "arrivalTime": 4, "burstTime": 20, "priority": 1 }
+      ],
+      "expectedBehavior": {
+        "fcfs": "Performs well - happens to be SJF order",
+        "sjf": "Same result as FCFS for this case"
+      }
+    }
+  },
+
+  "exercises": [
+    {
+      "id": 1,
+      "title": "Calculate Metrics Manually",
+      "difficulty": "Easy",
+      "scenario": "default",
+      "tasks": [
+        "Draw Gantt chart for FCFS",
+        "Calculate completion time for each process",
+        "Calculate turnaround time for each process",
+        "Calculate waiting time for each process",
+        "Calculate average waiting time"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Compare FCFS and SJF",
+      "difficulty": "Medium",
+      "scenario": "convoy",
+      "tasks": [
+        "Run both algorithms on convoy scenario",
+        "Compare average waiting times",
+        "Identify why SJF performs better",
+        "Explain convoy effect"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Round Robin Quantum Analysis",
+      "difficulty": "Medium",
+      "scenario": "balanced",
+      "tasks": [
+        "Run Round Robin with quantum = 2",
+        "Run Round Robin with quantum = 4",
+        "Run Round Robin with quantum = 8",
+        "Compare context switches and average times",
+        "Determine optimal quantum"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Starvation Prevention",
+      "difficulty": "Hard",
+      "scenario": "starvation",
+      "tasks": [
+        "Run Priority (non-preemptive)",
+        "Identify starving process",
+        "Compare with MLFQ result",
+        "Explain how aging prevents starvation"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Algorithm Selection",
+      "difficulty": "Hard",
+      "tasks": [
+        "For each scenario, predict which algorithm will perform best",
+        "Run simulations to verify predictions",
+        "Analyze why predictions were correct or incorrect",
+        "Develop guidelines for algorithm selection"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Process Scheduling Simulator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>OS Process Scheduling Simulator</h1>
+            <p class="subtitle">Interactive visualization of CPU scheduling algorithms</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('simulator')">Simulator</button>
+            <button class="tab-button" onclick="showTab('education')">Educational Materials</button>
+            <button class="tab-button" onclick="showTab('about')">About</button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="simulator" class="tab-content active">
+            <!-- Input Section -->
+            <section class="card">
+                <h2>Process Configuration</h2>
+
+                <div class="input-group">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="arrival-time">Arrival Time</label>
+                            <input type="number" id="arrival-time" min="0" value="0" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="burst-time">Burst Time</label>
+                            <input type="number" id="burst-time" min="1" value="1" placeholder="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">Priority (0 = highest)</label>
+                            <input type="number" id="priority" min="0" value="0" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button id="add-process" class="btn btn-primary">Add Process</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <button id="clear-processes" class="btn btn-secondary">Clear All</button>
+                        <button id="generate-random" class="btn btn-secondary">Generate Random</button>
+                        <div class="form-group">
+                            <select id="example-select">
+                                <option value="default">Default Example</option>
+                                <option value="convoy">Convoy Effect</option>
+                                <option value="starvation">Starvation Demo</option>
+                                <option value="mixed">Mixed Workload</option>
+                            </select>
+                            <button id="load-example" class="btn btn-secondary">Load Example</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Table -->
+                <div class="table-container">
+                    <h3>Current Processes</h3>
+                    <table class="process-table">
+                        <thead>
+                            <tr>
+                                <th>Process ID</th>
+                                <th>Arrival Time</th>
+                                <th>Burst Time</th>
+                                <th>Priority</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="process-table-body">
+                            <tr>
+                                <td colspan="5" class="no-data">No processes added</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Algorithm Selection -->
+            <section class="card">
+                <h2>Algorithm Configuration</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="algorithm-select">Scheduling Algorithm</label>
+                        <select id="algorithm-select">
+                            <option value="fcfs">FCFS (First Come First Serve)</option>
+                            <option value="sjf">SJF (Shortest Job First)</option>
+                            <option value="srtf">SRTF (Shortest Remaining Time First)</option>
+                            <option value="priority">Priority (Non-Preemptive)</option>
+                            <option value="priority-preemptive">Priority (Preemptive)</option>
+                            <option value="rr">Round Robin</option>
+                            <option value="mlq">Multilevel Queue</option>
+                            <option value="mlfq">Multilevel Feedback Queue</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group hidden" id="quantum-container">
+                        <label for="quantum">Time Quantum</label>
+                        <input type="number" id="quantum" min="1" value="4" placeholder="4">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="run-simulation" class="btn btn-primary btn-large">Run Simulation</button>
+                    <button id="compare-algorithms" class="btn btn-accent btn-large">Compare All Algorithms</button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="card hidden">
+                <h2>Results</h2>
+
+                <!-- Gantt Chart -->
+                <div id="gantt-container" class="gantt-container"></div>
+
+                <!-- Metrics -->
+                <div id="metrics-container" class="metrics-container"></div>
+
+                <!-- Comparison Results -->
+                <div id="comparison-container" class="comparison-container"></div>
+            </section>
+        </div>
+
+        <!-- Educational Materials Tab -->
+        <div id="education" class="tab-content">
+            <section class="card">
+                <h2>Understanding CPU Scheduling</h2>
+
+                <div class="education-content">
+                    <h3>What is CPU Scheduling?</h3>
+                    <p>
+                        CPU scheduling is the process of determining which process in the ready queue gets the CPU next.
+                        The scheduler is a fundamental component of the operating system that maximizes CPU utilization
+                        and ensures fair resource allocation.
+                    </p>
+
+                    <h3>Scheduling Algorithms</h3>
+
+                    <div class="algorithm-info">
+                        <h4>1. FCFS (First Come First Serve)</h4>
+                        <p><strong>Type:</strong> Non-preemptive</p>
+                        <p><strong>How it works:</strong> Processes are executed in the order they arrive.</p>
+                        <p><strong>Advantages:</strong> Simple, no starvation</p>
+                        <p><strong>Disadvantages:</strong> Convoy effect, poor average waiting time</p>
+                        <p><strong>Best for:</strong> Batch systems</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>2. SJF (Shortest Job First)</h4>
+                        <p><strong>Type:</strong> Non-preemptive</p>
+                        <p><strong>How it works:</strong> Process with shortest burst time is executed first.</p>
+                        <p><strong>Advantages:</strong> Optimal average waiting time</p>
+                        <p><strong>Disadvantages:</strong> Starvation of long processes, requires knowing burst time</p>
+                        <p><strong>Best for:</strong> Systems where burst time can be predicted</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>3. SRTF (Shortest Remaining Time First)</h4>
+                        <p><strong>Type:</strong> Preemptive (SJF)</p>
+                        <p><strong>How it works:</strong> Process with shortest remaining time is executed.</p>
+                        <p><strong>Advantages:</strong> Better response time than SJF</p>
+                        <p><strong>Disadvantages:</strong> High context switching overhead, starvation possible</p>
+                        <p><strong>Best for:</strong> Time-sharing systems with known burst times</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>4. Priority Scheduling</h4>
+                        <p><strong>Type:</strong> Preemptive or Non-preemptive</p>
+                        <p><strong>How it works:</strong> Each process has a priority; highest priority executes first.</p>
+                        <p><strong>Advantages:</strong> Flexible, can handle important processes</p>
+                        <p><strong>Disadvantages:</strong> Starvation, priority inversion</p>
+                        <p><strong>Best for:</strong> Systems with varying process importance</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>5. Round Robin</h4>
+                        <p><strong>Type:</strong> Preemptive</p>
+                        <p><strong>How it works:</strong> Each process gets a fixed time quantum in circular order.</p>
+                        <p><strong>Advantages:</strong> Fair, good response time, no starvation</p>
+                        <p><strong>Disadvantages:</strong> Context switching overhead, performance depends on quantum</p>
+                        <p><strong>Best for:</strong> Time-sharing and interactive systems</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>6. Multilevel Queue</h4>
+                        <p><strong>Type:</strong> Depends on queue algorithms</p>
+                        <p><strong>How it works:</strong> Multiple queues with different priorities and algorithms.</p>
+                        <p><strong>Advantages:</strong> Flexible, can optimize for different process types</p>
+                        <p><strong>Disadvantages:</strong> Complex, potential starvation</p>
+                        <p><strong>Best for:</strong> Systems with distinct process classes</p>
+                    </div>
+
+                    <div class="algorithm-info">
+                        <h4>7. Multilevel Feedback Queue (MLFQ)</h4>
+                        <p><strong>Type:</strong> Preemptive with adaptive behavior</p>
+                        <p><strong>How it works:</strong> Processes move between queues based on behavior.</p>
+                        <p><strong>Advantages:</strong> Adaptive, prevents starvation, no prior knowledge needed</p>
+                        <p><strong>Disadvantages:</strong> Complex, difficult to tune</p>
+                        <p><strong>Best for:</strong> General-purpose OS with diverse workloads</p>
+                    </div>
+
+                    <h3>Key Metrics Explained</h3>
+                    <ul>
+                        <li><strong>Arrival Time (AT):</strong> When the process arrives in the ready queue</li>
+                        <li><strong>Burst Time (BT):</strong> Total CPU time required by the process</li>
+                        <li><strong>Completion Time (CT):</strong> When the process finishes execution</li>
+                        <li><strong>Turnaround Time (TAT):</strong> CT - AT (total time from arrival to completion)</li>
+                        <li><strong>Waiting Time (WT):</strong> TAT - BT (time spent waiting in ready queue)</li>
+                        <li><strong>Response Time (RT):</strong> Time from arrival to first execution</li>
+                        <li><strong>CPU Utilization:</strong> Percentage of time CPU is executing processes</li>
+                        <li><strong>Throughput:</strong> Number of processes completed per time unit</li>
+                    </ul>
+
+                    <h3>Common Scheduling Problems</h3>
+                    <ul>
+                        <li><strong>Convoy Effect:</strong> Short processes wait for long process (FCFS)</li>
+                        <li><strong>Starvation:</strong> Low priority processes never execute</li>
+                        <li><strong>Priority Inversion:</strong> High priority process waits for low priority</li>
+                        <li><strong>Context Switch Overhead:</strong> Too frequent switching reduces efficiency</li>
+                    </ul>
+
+                    <h3>Trade-offs</h3>
+                    <table class="info-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Best Algorithm</th>
+                                <th>Worst Algorithm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Average Waiting Time</td>
+                                <td>SJF/SRTF</td>
+                                <td>FCFS (with convoy effect)</td>
+                            </tr>
+                            <tr>
+                                <td>Response Time</td>
+                                <td>Round Robin (small quantum)</td>
+                                <td>FCFS</td>
+                            </tr>
+                            <tr>
+                                <td>Fairness</td>
+                                <td>Round Robin, MLFQ</td>
+                                <td>SJF, Priority</td>
+                            </tr>
+                            <tr>
+                                <td>Simplicity</td>
+                                <td>FCFS</td>
+                                <td>MLFQ</td>
+                            </tr>
+                            <tr>
+                                <td>Context Switches</td>
+                                <td>FCFS, SJF</td>
+                                <td>Round Robin (small quantum)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- About Tab -->
+        <div id="about" class="tab-content">
+            <section class="card">
+                <h2>About This Simulator</h2>
+                <p>
+                    This OS Process Scheduling Simulator is an educational tool designed to help students
+                    and professionals understand how different CPU scheduling algorithms work.
+                </p>
+
+                <h3>Features</h3>
+                <ul>
+                    <li>Seven scheduling algorithms: FCFS, SJF, SRTF, Priority, Round Robin, MLQ, MLFQ</li>
+                    <li>Interactive Gantt chart visualization</li>
+                    <li>Comprehensive performance metrics</li>
+                    <li>Side-by-side algorithm comparison</li>
+                    <li>Example scenarios demonstrating key concepts</li>
+                    <li>Educational materials and explanations</li>
+                </ul>
+
+                <h3>How to Use</h3>
+                <ol>
+                    <li>Add processes with arrival time, burst time, and priority</li>
+                    <li>Select a scheduling algorithm</li>
+                    <li>Configure algorithm parameters (e.g., time quantum for Round Robin)</li>
+                    <li>Click "Run Simulation" to see results</li>
+                    <li>Use "Compare All Algorithms" to see performance differences</li>
+                    <li>Explore example scenarios to understand specific concepts</li>
+                </ol>
+
+                <h3>Technologies</h3>
+                <p>Built with vanilla JavaScript, HTML5, and CSS3. No external dependencies required.</p>
+
+                <h3>License</h3>
+                <p>MIT License - Free for educational use</p>
+
+                <h3>Version</h3>
+                <p>1.0.0 - Initial Release</p>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>OS Process Scheduling Simulator | Educational Tool for Operating Systems Concepts</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/process.js"></script>
+    <script src="js/schedulers/fcfs.js"></script>
+    <script src="js/schedulers/sjf.js"></script>
+    <script src="js/schedulers/priority.js"></script>
+    <script src="js/schedulers/roundRobin.js"></script>
+    <script src="js/schedulers/multilevelQueue.js"></script>
+    <script src="js/schedulers/mlfq.js"></script>
+    <script src="js/metrics.js"></script>
+    <script src="js/ganttChart.js"></script>
+    <script src="js/ui.js"></script>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
